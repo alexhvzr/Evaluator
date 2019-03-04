@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/alex/CLionProjects/Evaluator/evaluator.cpp.h
+
+/Users/alex/CLionProjects/Evaluator/evaluator.h
+math.h
+-
+sstream
+-
+vector
+-
+tokenizer.h
+/Users/alex/CLionProjects/Evaluator/tokenizer.h
+evaluator.cpp.h
+/Users/alex/CLionProjects/Evaluator/evaluator.cpp.h
+
+/Users/alex/CLionProjects/Evaluator/main.cpp
+iostream
+-
+evaluator.h
+/Users/alex/CLionProjects/Evaluator/evaluator.h
+
+/Users/alex/CLionProjects/Evaluator/token.h
+
+/Users/alex/CLionProjects/Evaluator/tokenizer.cpp.h
+
+/Users/alex/CLionProjects/Evaluator/tokenizer.h
+iostream
+-
+token.h
+/Users/alex/CLionProjects/Evaluator/token.h
+tokenizer.cpp.h
+/Users/alex/CLionProjects/Evaluator/tokenizer.cpp.h
+
