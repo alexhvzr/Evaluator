@@ -13,11 +13,11 @@ enum TokenType {
     OPAREN,      // (                             the same as the original
     CPAREN,      // )                             the same as the original
 
-    NOT,         // ! (logical negation)          reserved for PROG 5
-    BIT_COMP,    // ~                             reserved for PROG 5
+    NOT,         /// ! (logical negation)          Logical NOT
+    BIT_COMP,    /// ~                             Bitwise NOT
 
-    UN_MINUS,    // -                             reserved for PROG 5
-    UN_PLUS,     // +                             reserved for PROG 5
+    UN_MINUS,    /// -                             Unary minus
+    UN_PLUS,     /// +                             Unary plus
 
     MULT,        // *                             the same as the original
     DIV,         // /                             the same as the original
@@ -43,9 +43,11 @@ enum TokenType {
     LOG_AND,     // &&
     LOG_OR,      // ||
 
-    VAR_A,       // variable a
-    VAR_B,       // variable b
-    VAR_C,        // variable c
+    ASSIGN,      /// =                           Implement this
+
+    VAR_A,       /// variable a
+    VAR_B,       /// variable b
+    VAR_C,       /// variable c
 };
 
 // the class definition is the same as the original

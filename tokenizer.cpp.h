@@ -18,7 +18,7 @@ bool Tokenizer<NumericType>::getChar( char &ch ) {
         return true; // if it is not a delimiter
     }
     else
-        return false; // if it's a delimitter
+        return false; // if it's a delimiter
 }
 
 template <class NumericType>
@@ -29,16 +29,17 @@ Token<NumericType> Tokenizer<NumericType>::getToken( ) {
 
     if ( getChar( ch ) == true ) {
         switch( ch ) {
-            case '(': return (prevToken = OPAREN);                                   /// Implement these.
+            case '(': return (prevToken = OPAREN);
             case ')': return (prevToken = CPAREN);
 
-            case '!':
+            case '!':                                                                 // Check for unary operator here.
                 if ( getChar( ch ) == true && ch == '=' )
                     return (prevToken = NOTEQUAL);
                 in.putback( ch );
 
                 cerr << "no negation allowed" << endl;
                 return (prevToken = EOL);
+            case '~':                                            /// Implement this. (Bitwise NOT)
 
             case '*': return (prevToken = MULT);
 
@@ -46,9 +47,17 @@ Token<NumericType> Tokenizer<NumericType>::getToken( ) {
 
             case '%': return (prevToken = MODULUS);
 
-            case '+': return (prevToken = PLUS);
+            case '+':                                            // Check for unary operator here.
+                if(prevToken == OPAREN){                         // If prev token open paren or nothing it is unary, else it is binary.
+                    return (UN_PLUS);
+                }
+                return (prevToken = PLUS);
 
-            case '-': return (prevToken = MINUS);                                     /// Check for unary operator here.
+            case '-':
+                if(prevToken == OPAREN){                         // Check for unary operator here.!(3 == 3)
+                    return (UN_MINUS);
+                }
+                return (prevToken = MINUS);
 
             case '<':
                 if ( getChar( ch ) == true ) {
@@ -91,18 +100,21 @@ Token<NumericType> Tokenizer<NumericType>::getToken( ) {
                 return (prevToken = BIT_IOR);
 
             case '=':
-                if ( getChar( ch ) == true && ch == '=' )
+                if ( getChar( ch ) == true && ch == '=' )             /// Assignment
                     return (prevToken = EQUAL);
                 in.putback( ch );
 
                 cerr << "no assignment allowed" << endl;
                 return (prevToken = EOL);
+
             case 'a':
                 prevToken = VAR_A;
                 return Token<NumericType>(VAR_A,0);
+
             case 'b':
                 prevToken = VAR_B;
                 return Token<NumericType>(VAR_B,0);
+
             case 'c':
                 prevToken = VAR_C;
                 return Token<NumericType>(VAR_C,0);

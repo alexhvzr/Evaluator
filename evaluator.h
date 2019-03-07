@@ -87,6 +87,11 @@ public:
 
         PREC_TABLE[25].inputSymbol = 1;    // LOG_OR
         PREC_TABLE[25].topOfStack =  2;
+
+        PREC_TABLE[26].inputSymbol = 10;
+        PREC_TABLE[26].topOfStack = 11;
+
+        var_a = var_b = var_c = 0;         // Initialize variables to zero.
     }
 
     NumericType getValue( );                  // Do the evaluation
@@ -94,17 +99,21 @@ public:
 private:
     // new members
     vector<NumericType> postFixVarStack;      // Postfix machine stack for var
-    NumericType var_a;                        // variable a
-    NumericType var_b;                        // variable b
-    NumericType var_c;                        // variable c
+    NumericType var_a;                        /// variable a
+    NumericType var_b;                        /// variable b
+    NumericType var_c;                        /// variable c
     Precedence PREC_TABLE[26];                // precedence table
     vector<TokenType> opStack;                // Operator stack for conversion
     vector<NumericType> postFixStack;         // Postfix machine stack
+//    vector<NumericType> postVariableStack;    /// Postfix variable stack
     istringstream str;                        // The character stream
 
     // Internal routines
     NumericType getTop( );                    // Get top of postfix stack
     void binaryOp( TokenType topOp );         // Process an operator
+    void unaryOp ( TokenType );
+    void assignmentOp ( TokenType );
+    void arithmeticOp( TokenType );
     void processToken( const Token<NumericType> &lastToken );
 };
 
