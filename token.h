@@ -51,22 +51,23 @@ enum TokenType {
 };
 
 // the class definition is the same as the original
-template <class NumericType>
+template<class NumericType>
 class Token {
 public:
-    Token( TokenType tt = EOL, const NumericType & nt = 0 )
-            : theType( tt ), theValue( nt ) {
+    Token(TokenType tt = EOL, const NumericType &nt = 0)
+            : theType(tt), theValue(nt) {
     }
 
-    TokenType getType( ) const {
+    TokenType getType() const {
         return theType;
     }
-    const NumericType &getValue( ) const {
+
+    const NumericType &getValue() const {
         return theValue;
     }
 
 private:
-    TokenType   theType;
+    TokenType theType;
     NumericType theValue;
 };
 

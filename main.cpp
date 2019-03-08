@@ -4,12 +4,12 @@
 
 using namespace std;
 
-int main( ) {
+int main() {
     string str;
 
-    while ( getline( cin, str ) ) {
-        Evaluator<int> e( str );
-        cout << e.getValue( ) << endl;
+    while (getline(cin, str)) {
+        Evaluator<int> e(str);
+        cout << e.getValue() << endl;
     }
 
     return 0;

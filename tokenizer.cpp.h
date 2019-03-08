@@ -5,128 +5,148 @@
 #ifndef EVALUATOR_TOKENIZER_CPP_H
 #define EVALUATOR_TOKENIZER_CPP_H
 
-template <class NumericType>
-bool Tokenizer<NumericType>::getChar( char &ch ) {
+template<class NumericType>
+bool Tokenizer<NumericType>::getChar(char &ch) {
     char tmp;
 
     // skip blanks
-    while ( in.get( tmp ) && tmp == ' ' );
+    while (in.get(tmp) && tmp == ' ');
 
     // read a char
-    if ( in.good( ) && tmp != '\n'&& tmp != '\0' ) {
+    if (in.good() && tmp != '\n' && tmp != '\0') {
         ch = tmp;
         return true; // if it is not a delimiter
-    }
-    else
+    } else
         return false; // if it's a delimiter
 }
 
-template <class NumericType>
-Token<NumericType> Tokenizer<NumericType>::getToken( ) {
+template<class NumericType>
+Token<NumericType> Tokenizer<NumericType>::getToken() {
 
     char ch;
     NumericType theValue;
 
-    if ( getChar( ch ) == true ) {
-        switch( ch ) {
-            case '(': return (prevToken = OPAREN);
-            case ')': return (prevToken = CPAREN);
+    if (getChar(ch) == true) {
+        switch (ch) {
+            case '(':
+                return (prevToken = OPAREN);
+            case ')':
+                return (prevToken = CPAREN);
 
-            case '!':                                                                 // Check for unary operator here.
-                if ( getChar( ch ) == true && ch == '=' )
+            case '!':                                                                 // Check for logical operator here.
+                if (getChar(ch) == true && ch == '=')
                     return (prevToken = NOTEQUAL);
-                in.putback( ch );
+                in.putback(ch);
+                return (prevToken = NOT);
+//                cerr << "no negation allowed" << endl;
+//                return (prevToken = EOL);
+            case '~':
+                return (prevToken = BIT_COMP);          /// Implement this. (Bitwise NOT)
 
-                cerr << "no negation allowed" << endl;
-                return (prevToken = EOL);
-            case '~':                                            /// Implement this. (Bitwise NOT)
+            case '*':
+                return (prevToken = MULT);
 
-            case '*': return (prevToken = MULT);
+            case '/':
+                return (prevToken = DIV);
 
-            case '/': return (prevToken = DIV);
+            case '%':
+                return (prevToken = MODULUS);
 
-            case '%': return (prevToken = MODULUS);
-
-            case '+':                                            // Check for unary operator here.
-                if(prevToken == OPAREN){                         // If prev token open paren or nothing it is unary, else it is binary.
+            case '+':                                            /// Check for unary operator here.
+                if (prevToken ==
+                    OPAREN) {                         /// If prev token open paren or nothing it is unary, else it is binary.
                     return (UN_PLUS);
                 }
                 return (prevToken = PLUS);
 
             case '-':
-                if(prevToken == OPAREN){                         // Check for unary operator here.!(3 == 3)
+                if (prevToken == OPAREN) {                         /// Check for unary operator here.!(3 == 3)
                     return (UN_MINUS);
                 }
                 return (prevToken = MINUS);
 
             case '<':
-                if ( getChar( ch ) == true ) {
-                    switch( ch ) {
-                        case '<': return (prevToken = SHIFT_L);
-                        case '=': return (prevToken = LE);
+                if (getChar(ch) == true) {
+                    switch (ch) {
+                        case '<':
+                            return (prevToken = SHIFT_L);
+                        case '=':
+                            return (prevToken = LE);
                         default:
-                            in.putback( ch );
+                            in.putback(ch);
                             return (prevToken = LT);
                     }
                 }
-                in.putback( ch );
+                in.putback(ch);
                 return (prevToken = LT);
 
             case '>':
-                if ( getChar( ch ) == true ) {
-                    switch( ch ) {
-                        case '>': return (prevToken = SHIFT_R);
-                        case '=': return (prevToken = GE);
+                if (getChar(ch) == true) {
+                    switch (ch) {
+                        case '>':
+                            return (prevToken = SHIFT_R);
+                        case '=':
+                            return (prevToken = GE);
                         default:
-                            in.putback( ch );
+                            in.putback(ch);
                             return (prevToken = GT);
                     }
                 }
-                in.putback( ch );
+                in.putback(ch);
                 return (prevToken = GT);
 
             case '&':
-                if ( getChar( ch ) == true && ch == '&' )
+                if (getChar(ch) == true && ch == '&')
                     return (prevToken = LOG_AND);
-                in.putback( ch );
+                in.putback(ch);
                 return (prevToken = BIT_AND);
 
-            case '^': return (prevToken = BIT_EOR);
+            case '^':
+                return (prevToken = BIT_EOR);
 
             case '|':
-                if ( getChar( ch ) == true && ch == '|' )
+                if (getChar(ch) == true && ch == '|')
                     return (prevToken = LOG_OR);
-                in.putback( ch );
+                in.putback(ch);
                 return (prevToken = BIT_IOR);
 
             case '=':
-                if ( getChar( ch ) == true && ch == '=' )             /// Assignment
+                if (getChar(ch) == true && ch == '=')             /// Assignment
                     return (prevToken = EQUAL);
-                in.putback( ch );
+                in.putback(ch);
 
+//                if(prevToken == VAR_A){
+//
+//                }
+//                if(prevToken == VAR_B){
+//
+//                }
+//                if(prevToken == VAR_C){
+//
+//                }
                 cerr << "no assignment allowed" << endl;
                 return (prevToken = EOL);
 
             case 'a':
                 prevToken = VAR_A;
-                return Token<NumericType>(VAR_A,0);
+                return Token<NumericType>(VAR_A, 0);
 
             case 'b':
                 prevToken = VAR_B;
-                return Token<NumericType>(VAR_B,0);
+                return Token<NumericType>(VAR_B, 0);
 
             case 'c':
                 prevToken = VAR_C;
-                return Token<NumericType>(VAR_C,0);
+                return Token<NumericType>(VAR_C, 0);
 
             default:
-                in.putback( ch );
-                if ( !( in >> theValue ) ) {
+                in.putback(ch);
+                if (!(in >> theValue)) {
                     cerr << "Parse error" << endl;
                     return (prevToken = EOL);
                 }
                 prevToken = VALUE;
-                return Token<NumericType>( VALUE, theValue );
+                return Token<NumericType>(VALUE, theValue);
         }
     }
 
