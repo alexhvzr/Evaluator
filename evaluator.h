@@ -88,8 +88,8 @@ public:
         PREC_TABLE[25].inputSymbol = 1;    // LOG_OR
         PREC_TABLE[25].topOfStack = 2;
 
-        PREC_TABLE[26].inputSymbol = -1;  // Assign
-        PREC_TABLE[26].topOfStack = 0;
+        PREC_TABLE[26].inputSymbol = 1;   // Assign
+        PREC_TABLE[26].topOfStack = 2;
 
         var_a = var_b = var_c = 0;         // Initialize variables to zero.
     }
@@ -98,10 +98,10 @@ public:
 
 private:
     // new members
-    vector<char> postFixVarStack;             /// Postfix machine stack for var
-    NumericType var_a;                        /// variable a
-    NumericType var_b;                        /// variable b
-    NumericType var_c;                        /// variable c
+    vector<char> postFixVarStack;             // Postfix machine stack for var
+    NumericType var_a;                        // variable a
+    NumericType var_b;                        // variable b
+    NumericType var_c;                        // variable c
     Precedence PREC_TABLE[27];                // precedence table
     vector<TokenType> opStack;                // Operator stack for conversion
     vector<NumericType> postFixStack;         // Postfix machine stack
@@ -113,13 +113,11 @@ private:
     void binaryOp(TokenType topOp);         // Process an operator
     void unaryOp(TokenType);
 
-    void assignmentOp(TokenType);
-
     void arithmeticOp(TokenType);
 
     void processToken(const Token<NumericType> &lastToken);
 
-    void getVariable(char);
+    char getVariable();
 };
 
 #include "evaluator.cpp.h"

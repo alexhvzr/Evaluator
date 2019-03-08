@@ -38,10 +38,9 @@ Token<NumericType> Tokenizer<NumericType>::getToken() {
                     return (prevToken = NOTEQUAL);
                 in.putback(ch);
                 return (prevToken = NOT);
-//                cerr << "no negation allowed" << endl;
-//                return (prevToken = EOL);
+
             case '~':
-                return (prevToken = BIT_COMP);          /// Implement this. (Bitwise NOT)
+                return (prevToken = BIT_COMP);
 
             case '*':
                 return (prevToken = MULT);
@@ -52,15 +51,15 @@ Token<NumericType> Tokenizer<NumericType>::getToken() {
             case '%':
                 return (prevToken = MODULUS);
 
-            case '+':                                            /// Check for unary operator here.
+            case '+':                                            // Check for unary operator here.
                 if (prevToken ==
-                    OPAREN) {                         /// If prev token open paren or nothing it is unary, else it is binary.
+                    OPAREN) {                         // If prev token open paren or nothing it is unary, else it is binary.
                     return (UN_PLUS);
                 }
                 return (prevToken = PLUS);
 
             case '-':
-                if (prevToken == OPAREN) {                         /// Check for unary operator here.!(3 == 3)
+                if (prevToken == OPAREN) {                         // Check for unary operator here.
                     return (UN_MINUS);
                 }
                 return (prevToken = MINUS);
@@ -114,18 +113,7 @@ Token<NumericType> Tokenizer<NumericType>::getToken() {
                 if (getChar(ch) == true && ch == '=')             /// Assignment
                     return (prevToken = EQUAL);
                 in.putback(ch);
-
-//                if(prevToken == VAR_A){
-//
-//                }
-//                if(prevToken == VAR_B){
-//
-//                }
-//                if(prevToken == VAR_C){
-//
-//                }
-                cerr << "no assignment allowed" << endl;
-                return (prevToken = EOL);
+                return (prevToken = ASSIGN);
 
             case 'a':
                 prevToken = VAR_A;

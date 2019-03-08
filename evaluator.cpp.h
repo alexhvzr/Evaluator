@@ -49,8 +49,8 @@ processToken(const Token<NumericType> &lastToken) {
         case VALUE:
             postFixStack.push_back(lastToken.getValue());
             postFixVarStack.push_back(' ');
-            cout << "PostFix stack = ";
-            printVector(postFixStack);
+//            cout << "PostFix stack = ";
+//            printVector(postFixStack);
             return;
 
         case VAR_A:
@@ -71,13 +71,12 @@ processToken(const Token<NumericType> &lastToken) {
         case CPAREN:
             while ((topOp = opStack.back()) != OPAREN &&
                    topOp != EOL) {
-//                cout << "Cparen last type = " << lastType << endl;
-//                cout << "Cparen topOp = " << topOp << endl;
                 binaryOp(topOp);
             }
 
             if (topOp == OPAREN)
-                opStack.pop_back(); // get rid of opening parethesis
+                opStack.pop_back(); // get rid of opening parenthesis
+
             else
                 cerr << "Missing open parenthesis" << endl;
             break;
@@ -87,7 +86,7 @@ processToken(const Token<NumericType> &lastToken) {
                 arithmeticOp(topOp);
 
             if (lastToken.getType() != EOL)
-                opStack.push_back(lastType);  /// push back var stack?
+                opStack.push_back(lastType);
 
             break;
     }
@@ -97,6 +96,7 @@ template<class NumericType>
 void Evaluator<NumericType>::unaryOp(TokenType topOp) {
 
     NumericType var = getTop();
+    char ch = getVariable();
 
     if (topOp == UN_MINUS) {
         postFixStack.push_back(var * -1);
@@ -131,8 +131,12 @@ void Evaluator<NumericType>::binaryOp(TokenType topOp) {
         opStack.pop_back();
         return;
     }
+
     NumericType rhs = getTop();
     NumericType lhs = getTop();
+
+    getVariable();
+    char var = getVariable();
 
     // the original operators
     if (topOp == PLUS)
@@ -178,14 +182,21 @@ void Evaluator<NumericType>::binaryOp(TokenType topOp) {
         postFixStack.push_back(lhs && rhs);
     else if (topOp == LOG_OR)
         postFixStack.push_back(lhs || rhs);
-//    else if (topOp == UN_MINUS)
-//        postFixStack.push_back(lhs);
-//        postFixStack.push_back((rhs *= -1));   /// Error here, lhs = 8 rhs = 5
-//    cout << "opStack before popback = ";
-//    printVector(opStack);
+    else  if (topOp == ASSIGN){
+        switch (var){
+            case 'a': var_a = rhs;
+            /// Do something here? 
+            break;
+            case 'b': var_b = rhs;
+            break;
+            case 'c': var_c = rhs;
+            break;
+        }
+
+    }
+
     opStack.pop_back();
-//    cout << "opStack after popback= ";
-//    printVector(opStack);
+
 }
 
 // top and pop the postfix machine stack; return the result.
@@ -193,11 +204,24 @@ void Evaluator<NumericType>::binaryOp(TokenType topOp) {
 template<class NumericType>
 NumericType Evaluator<NumericType>::getTop() {
     if (postFixStack.empty()) {
-        cerr << "Missing operand" << endl;
+        cerr << "Get Top Missing operand" << endl;
         return 0;
     }
 
     NumericType tmp = postFixStack.back();
     postFixStack.pop_back();
+
+    return tmp;
+}
+
+template <class NumericType>
+char Evaluator<NumericType>::getVariable(){
+    if (postFixVarStack.empty()) {
+        cerr << "Empty Variable Stack" << endl;
+        return 0;
+    }
+    char tmp = postFixVarStack.back();
+    postFixVarStack.pop_back();
+
     return tmp;
 }
