@@ -7,8 +7,29 @@
 // error.
 template<class NumericType>
 void printVector(vector<NumericType> &v) {
+    cout << "postFixStack = ";
     for (int i = 0; i < v.size(); i++) {
         cout << v[i] << " ";
+    }
+    cout << endl;
+}
+
+template<class NumericType>
+void printpostFixVarStack(vector<NumericType> &v) {
+    cout << "postfixVarStack = ";
+
+    for (int i = 0; i < v.size(); i++) {
+        (char(v[i]) == ' ') ? cout << "?" : cout << char(v[i]) << " ";
+    }
+    cout << endl;
+}
+
+template<class NumericType>
+void printOS(vector<TokenType> &v) {
+    cout << "Op stack = ";
+    for (int i = 0; i < v.size(); i++) {
+        TokenType t = v[i];
+        cout << t << " ";
     }
     cout << endl;
 }
@@ -49,8 +70,6 @@ processToken(const Token<NumericType> &lastToken) {
         case VALUE:
             postFixStack.push_back(lastToken.getValue());
             postFixVarStack.push_back(' ');
-//            cout << "PostFix stack = ";
-//            printVector(postFixStack);
             return;
 
         case VAR_A:
@@ -71,7 +90,7 @@ processToken(const Token<NumericType> &lastToken) {
         case CPAREN:
             while ((topOp = opStack.back()) != OPAREN &&
                    topOp != EOL) {
-                binaryOp(topOp);
+                arithmeticOp(topOp);
             }
 
             if (topOp == OPAREN)
@@ -96,7 +115,6 @@ template<class NumericType>
 void Evaluator<NumericType>::unaryOp(TokenType topOp) {
 
     NumericType var = getTop();
-    char ch = getVariable();
 
     if (topOp == UN_MINUS) {
         postFixStack.push_back(var * -1);
@@ -132,11 +150,12 @@ void Evaluator<NumericType>::binaryOp(TokenType topOp) {
         return;
     }
 
-    NumericType rhs = getTop();
-    NumericType lhs = getTop();
 
-    getVariable();
-    char var = getVariable();
+    NumericType rhs = getTop(); // 30
+    NumericType lhs = getTop(); // 0
+
+    getVariable(); // a
+    char var = getVariable();  // /0
 
     // the original operators
     if (topOp == PLUS)
@@ -182,21 +201,28 @@ void Evaluator<NumericType>::binaryOp(TokenType topOp) {
         postFixStack.push_back(lhs && rhs);
     else if (topOp == LOG_OR)
         postFixStack.push_back(lhs || rhs);
-    else  if (topOp == ASSIGN){
-        switch (var){
-            case 'a': var_a = rhs;
-            /// Do something here? 
-            break;
-            case 'b': var_b = rhs;
-            break;
-            case 'c': var_c = rhs;
-            break;
+    else if (topOp == ASSIGN) {
+
+        switch (var) {
+            case 'a':
+                var_a = rhs;
+                postFixStack.push_back(var_a);
+                postFixVarStack.push_back('a');
+                break;
+            case 'b':
+                var_b = rhs;
+                postFixStack.push_back(var_b);
+                postFixVarStack.push_back('b');
+                break;
+            case 'c':
+                var_c = rhs;
+                postFixStack.push_back(var_c);
+                postFixVarStack.push_back('c');
+                break;
         }
-
     }
-
+    postFixVarStack.push_back(' ');
     opStack.pop_back();
-
 }
 
 // top and pop the postfix machine stack; return the result.
@@ -204,7 +230,7 @@ void Evaluator<NumericType>::binaryOp(TokenType topOp) {
 template<class NumericType>
 NumericType Evaluator<NumericType>::getTop() {
     if (postFixStack.empty()) {
-        cerr << "Get Top Missing operand" << endl;
+        cerr << "postFixStack is empty." << endl;
         return 0;
     }
 
@@ -214,8 +240,8 @@ NumericType Evaluator<NumericType>::getTop() {
     return tmp;
 }
 
-template <class NumericType>
-char Evaluator<NumericType>::getVariable(){
+template<class NumericType>
+char Evaluator<NumericType>::getVariable() {
     if (postFixVarStack.empty()) {
         cerr << "Empty Variable Stack" << endl;
         return 0;

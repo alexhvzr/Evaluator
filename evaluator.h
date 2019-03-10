@@ -105,19 +105,16 @@ private:
     Precedence PREC_TABLE[27];                // precedence table
     vector<TokenType> opStack;                // Operator stack for conversion
     vector<NumericType> postFixStack;         // Postfix machine stack
-//    vector<NumericType> postVariableStack;    /// Postfix variable stack
     istringstream str;                        // The character stream
 
     // Internal routines
     NumericType getTop();                    // Get top of postfix stack
     void binaryOp(TokenType topOp);         // Process an operator
     void unaryOp(TokenType);
-
     void arithmeticOp(TokenType);
-
     void processToken(const Token<NumericType> &lastToken);
-
     char getVariable();
+
 };
 
 #include "evaluator.cpp.h"
